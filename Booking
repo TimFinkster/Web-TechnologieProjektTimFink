@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>Booking | Tim Fink</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="author" content="Tim Fink">
+    <meta name="description" content="Booking und Kontakt für Tim Fink - Event-Anfragen, Kollaborationen und Anfragen.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav>
+        <a href="HTMLPage1.html">Home</a>
+        <a href="releases.html">Releases</a>
+        <a href="Interactive Mixer.html">Interactive Mixer</a>
+        <a href="booking.html" class="active" aria-current="page">Booking</a>
+        <a href="Team-Impressum.html">Team / Impressum</a>
+    </nav>
+
+    <header>
+        <h1>Booking & Kontakt</h1>
+        <p>Anfragen für Events, Kollaborationen und mehr</p>
+    </header>
+
+    <main>
+        <!-- Newsletter Section -->
+        <section class="newsletter-section">
+            <h2>📬 Newsletter</h2>
+            <p>Neue Releases, Events und exklusive Updates. Melde dich für meinen Newsletter an und stay up to date!</p>
+            <form class="newsletter-form" id="newsletterForm">
+                <input 
+                    type="email" 
+                    placeholder="Deine E-Mail Adresse" 
+                    required 
+                    aria-label="Newsletter E-Mail">
+                <button type="submit" class="newsletter-btn">Anmelden</button>
+            </form>
+        </section>
+
+        <!-- Contact Form Section -->
+        <section class="contact-section">
+            <h2>📧 Kontaktformular</h2>
+            <p>Hast du eine Event-Anfrage, möchtest zusammenarbeiten oder einfach Feedback geben? Schreib mir eine Nachricht!</p>
+            
+            <div class="success-message" id="successMessage">
+                ✓ Nachricht erfolgreich gesendet! Ich melde mich bald bei dir.
+            </div>
+
+            <form class="contact-form" id="contactForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Name *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-Mail *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Telefonnummer (optional)</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
+
+                <div class="form-group">
+                    <label for="subject">Betreff *</label>
+                    <select id="subject" name="subject" required>
+                        <option value="">-- Wähle ein Thema --</option>
+                        <option value="event_booking">Event-Anfrage</option>
+                        <option value="collaboration">Zusammenarbeit</option>
+                        <option value="interview">Interview / Podcast</option>
+                        <option value="remix_request">Remix-Anfrage</option>
+                        <option value="other">Sonstiges</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Nachricht *</label>
+                    <textarea id="message" name="message" required placeholder="Schreib deine Nachricht hier..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Nachricht Senden</button>
+            </form>
+        </section>
+
+    </main>
+
+    <footer>&copy; 2026 Tim Fink | Web-Technologien Projekt | FH Salzburg</footer>
+
+    <script>
+        // Newsletter Form Handler
+document.getElementById('newsletterForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = this.querySelector('input[type="email"]').value;
+    const btn = this.querySelector('.newsletter-btn');
+    
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwUjf138_lhnyKQYAGH8xMRa9aYDHBAZliDpDF16HzqOIwkvVg2NPfqZtvYIfc23Iw5/exec';
+    
+    try {
+        btn.textContent = 'Wird angemeldet...';
+        btn.disabled = true;
+        
+        await fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: new URLSearchParams({
+                type: 'newsletter',
+                email: email
+            })
+        });
+        
+        alert('✓ Danke für deine Anmeldung!');
+        this.reset();
+        btn.textContent = 'Anmelden';
+        btn.disabled = false;
+    } catch (error) {
+        console.error('Fehler:', error);
+        alert('Es gab einen Fehler. Bitte versuche es später erneut.');
+        btn.textContent = 'Anmelden';
+        btn.disabled = false;
+    }
+});
+
+// Contact Form Handler
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const subject = document.getElementById('subject').value;
+    const message = document.getElementById('message').value;
+    
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwUjf138_lhnyKQYAGH8xMRa9aYDHBAZliDpDF16HzqOIwkvVg2NPfqZtvYIfc23Iw5/exec';
+    const btn = document.querySelector('.submit-btn');
+    
+    try {
+        btn.textContent = 'Wird gesendet...';
+        btn.disabled = true;
+        
+        await fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: new URLSearchParams({
+                type: 'contact',
+                name: name,
+                email: email,
+                phone: phone,
+                subject: subject,
+                message: message
+            })
+        });
+        
+        // Erfolgs-Nachricht anzeigen
+        document.getElementById('successMessage').classList.add('show');
+        this.reset();
+        btn.textContent = 'Nachricht Senden';
+        btn.disabled = false;
+        
+        // Nachricht nach 5 Sekunden ausblenden
+        setTimeout(() => {
+            document.getElementById('successMessage').classList.remove('show');
+        }, 5000);
+    } catch (error) {
+        console.error('Fehler:', error);
+        alert('Es gab einen Fehler beim Senden. Bitte versuche es später erneut.');
+        btn.textContent = 'Nachricht Senden';
+        btn.disabled = false;
+    }
+});
+    </script>
+</body>
+</html>
